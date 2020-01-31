@@ -1,4 +1,3 @@
-const { AUTH_SECRET_KEY } = require('../.env')
 const passport = require('passport')
 const passportJwt = require('passport-jwt')
 const { Strategy, ExtractJwt } = passportJwt
