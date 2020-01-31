@@ -1,3 +1,4 @@
+const { AUTH_SECRET_KEY } = require('../.env')
 const jwt = require('jwt-simple')
 const bcrypt = require('bcrypt-nodejs')
 
