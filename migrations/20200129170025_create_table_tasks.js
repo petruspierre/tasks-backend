@@ -5,6 +5,7 @@ exports.up = function(knex) {
       table.string('desc').notNull()
       table.datetime('estimateAt')
       table.datetime('doneAt')
+      table.boolean('archived')
       table.integer('userId').references('id').inTable('users').notNull()
   })
 };

@@ -8,7 +8,10 @@ module.exports = app => {
             .where({ userId: req.user.id })
             .where('estimateAt', '<=', date)
             .orderBy('estimateAt')
-            .then(tasks => res.json(tasks))
+            .then(tasks => {
+                console.log(tasks)
+                res.json(tasks)
+            })
             .catch(err => res.status(50).json(err))
     }
 
@@ -47,6 +50,14 @@ module.exports = app => {
             .catch(err => res.status(400).json(err))
     }
 
+    const updateTaskArchived = (req, res, archived) => {
+        app.db('tasks')
+            .where({ id: req.params.id, userId: req.user.id })
+            .update({ archived })
+            .then(_ => res.status(204).send())
+            .catch(err => res.status(400).json(err))
+    }
+
     const toggleTask = (req, res) => {
         app.db('tasks')
             .where({id: req.params.id, userId: req.user.id})
@@ -56,12 +67,29 @@ module.exports = app => {
                     const msg = 'Task nao encontrada, id: ' + req.params.id
                     return res.status(400).send(msg)
                 }
-
+                
+                console.log(task)
                 const doneAt = task.doneAt ? null : new Date()
                 updateTaskDoneAt(req, res, doneAt)
             })
             .catch(err => res.status(400).json(err))
     }
 
-    return { getTasks, save, remove, toggleTask }
+    const archiveTask = (req, res) => {
+        app.db('tasks')
+            .where({ id: req.params.id, userId: req.user.id })
+            .first()
+            .then(task => {
+                if(!task){
+                    const msg = 'Task nao encontrada, id: ' + req.params.id
+                    return res.status(400).send(msg)
+                }
+
+                const archived = task.archived ? false : true
+                updateTaskArchived(req, res, archived)
+            })
+            .catch(err => res.status(400).json(err))
+    }
+
+    return { getTasks, save, remove, toggleTask, archiveTask }
 }

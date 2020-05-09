@@ -12,6 +12,6 @@ consign()
 
 app.db = db
 
-app.listen(process.env.PORT || 3000, () => {
+app.listen(3000, () => {
     console.log('Backend executando...')
 })
