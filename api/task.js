@@ -17,7 +17,7 @@ module.exports = app => {
 
     const save = (req, res) => {
         if(!req.body.desc.trim()) {
-            return res.status(400).send('Descrição é um campo obrigatório')
+            return res.status(400).json({ error: 'Descrição é um campo obrigatório' })
         }
 
         req.body.userId = req.user.id
@@ -36,7 +36,7 @@ module.exports = app => {
                     res.status(204).send()
                 } else {
                     const msg = 'Não foi encontrada task com id' + req.params.id
-                    res.status(400).send(msg)
+                    res.status(400).json({ error: msg })
                 }
             })
             .catch(err => res.status(400).json(err))
@@ -65,7 +65,7 @@ module.exports = app => {
             .then(task => {
                 if(!task){
                     const msg = 'Task nao encontrada, id: ' + req.params.id
-                    return res.status(400).send(msg)
+                    return res.status(400).json({ error: msg })
                 }
                 
                 console.log(task)
@@ -82,7 +82,7 @@ module.exports = app => {
             .then(task => {
                 if(!task){
                     const msg = 'Task nao encontrada, id: ' + req.params.id
-                    return res.status(400).send(msg)
+                    return res.status(400).json({ error: msg })
                 }
 
                 const archived = task.archived ? false : true

@@ -1,11 +1,10 @@
-const { AUTH_SECRET_KEY } = require('../.env')
 const jwt = require('jwt-simple')
 const bcrypt = require('bcrypt-nodejs')
 
 module.exports = app => {
     const signin = async(req, res) => {
         if(!req.body.email || !req.body.password) {
-            return res.status(400).send('Dados incompletos')
+            return res.status(400).json({ error: 'Dados incompletos' })
         }
 
         const user = await app.db('users')
@@ -15,18 +14,18 @@ module.exports = app => {
         if(user) {
             bcrypt.compare(req.body.password, user.password, (err, isMatch) => {
                 if(err || !isMatch){
-                    return res.status(401).send('A senha informada é inválida')
+                    return res.status(401).json({ error: 'A senha informada é inválida' })
                 }
 
                 const payload = { id: user.id }
                 res.json({
                     name: user.name,
                     email: user.email,
-                    token: jwt.encode(payload, AUTH_SECRET_KEY)
+                    token: jwt.encode(payload, process.env.AUTH_SECRET_KEY)
                 })
             })
         } else {
-            res.status(400).send('Problemas com o login do usuário. Usuário não encontrado')
+            res.status(400).json({ error: 'Problemas com o login do usuário. Usuário não encontrado' })
         }
     }
 
